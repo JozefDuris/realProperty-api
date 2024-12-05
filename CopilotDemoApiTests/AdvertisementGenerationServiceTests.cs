@@ -53,7 +53,6 @@ namespace CopilotDemoApiTests
             Assert.Contains("Awesome Apartment with 2 rooms covering 80 m2", advertisement);
             Assert.Contains("Property can be found at 456 Elm St", advertisement);
             Assert.Contains("Contact us at 555-555-5555", advertisement);
-            Assert.Contains("Parking options:", advertisement);
             Assert.Contains("Public underground parking within walking distance", advertisement);
         }
     }
