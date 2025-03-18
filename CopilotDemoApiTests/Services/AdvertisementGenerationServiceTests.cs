@@ -1,9 +1,7 @@
 using CopilotDemoApi.Models;
 using CopilotDemoApi.Services;
-using Moq;
-using Xunit;
 
-namespace CopilotDemoApiTests
+namespace CopilotDemoApiTests.Services
 {
     public class AdvertisementGenerationServiceTests
     {
@@ -13,10 +11,19 @@ namespace CopilotDemoApiTests
             // Arrange
             var data = new RealProperty
             {
-                PropertyType = RealPropertyType.Apartment,
-                Rooms = 3,
-                Area = 100,
-                Address = "123 Main St"
+                Id = 1,
+                Versions = new List<RealPropertyVersion>
+                {
+                    new RealPropertyVersion
+                    {
+                        VersionNumber = 1,
+                        PropertyType = RealPropertyType.Apartment,
+                        Rooms = 3,
+                        Area = 100,
+                        Address = "123 Main St",
+                        Price = 500000
+                    }
+                }
             };
 
             var advertisementGenerationService = new AdvertisementGenerationService();
@@ -37,10 +44,19 @@ namespace CopilotDemoApiTests
             // Arrange
             var data = new RealProperty
             {
-                PropertyType = RealPropertyType.Apartment,
-                Rooms = 2,
-                Area = 80,
-                Address = "456 Elm St"
+                Id = 2,
+                Versions = new List<RealPropertyVersion>
+                {
+                    new RealPropertyVersion
+                    {
+                        VersionNumber = 1,
+                        PropertyType = RealPropertyType.Apartment,
+                        Rooms = 2,
+                        Area = 80,
+                        Address = "456 Elm St",
+                        Price = 300000
+                    }
+                }
             };
 
             var advertisementGenerationService = new AdvertisementGenerationService();

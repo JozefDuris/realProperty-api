@@ -1,6 +1,6 @@
 ﻿using CopilotDemoApi.Models;
 
-namespace CopilotDemoApi.Services
+namespace CopilotDemoApi.Services.Interfaces
 {
     public interface IAdvertisementGenerationService
     {

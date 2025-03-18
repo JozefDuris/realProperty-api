@@ -1,4 +1,5 @@
 ﻿using CopilotDemoApi.Models;
+using CopilotDemoApi.Services.Interfaces;
 using System.Text;
 
 namespace CopilotDemoApi.Services
@@ -9,19 +10,21 @@ namespace CopilotDemoApi.Services
         {
             var result = new StringBuilder();
 
+            var latestVersion = data.GetLatestVersion()!;
+
             result.AppendLine(GenerateHeader());
-            result.AppendLine(GetPropertySummary(data));
-            result.AppendLine(GetPropertyLocationSummary(data));
-            if (data.PropertyType == RealPropertyType.Apartment)
+            result.AppendLine(GetPropertySummary(latestVersion));
+            result.AppendLine(GetPropertyLocationSummary(latestVersion));
+            if (latestVersion.PropertyType == RealPropertyType.Apartment)
             {
-                result.AppendLine(GetParkingOptions(data));
+                result.AppendLine(GetParkingOptions(latestVersion));
             }
             result.AppendLine(GenerateContactInfo());
 
             return result.ToString();
         }
 
-        private string GetParkingOptions(RealProperty data)
+        private static string GetParkingOptions(RealPropertyVersion version)
         {
             return "Public underground parking within walking distance";
         }
@@ -36,14 +39,14 @@ namespace CopilotDemoApi.Services
             return "Property Advertisement";
         }
 
-        private string GetPropertySummary(RealProperty data)
+        private static string GetPropertySummary(RealPropertyVersion version)
         {
-            return $"Awesome {Enum.GetName<RealPropertyType>(data.PropertyType)} with {data.Rooms} rooms covering {data.Area} m2";
+            return $"Awesome {Enum.GetName(version.PropertyType)} with {version.Rooms} rooms covering {version.Area} m2";
         }
 
-        private string GetPropertyLocationSummary(RealProperty data)
+        private static string GetPropertyLocationSummary(RealPropertyVersion version)
         {
-            return $"Property can be found at {data.Address}";
+            return $"Property can be found at {version.Address}";
         }
     }
 }

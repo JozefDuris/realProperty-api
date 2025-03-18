@@ -1,22 +1,23 @@
+using CopilotDemoApi.InfrastructureAdapters.Interfaces;
 using CopilotDemoApi.Models;
 using CopilotDemoApi.Services;
 using LiteDB;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace CopilotDemoApiTests
+namespace CopilotDemoApiTests.Services
 {
-    public class PropertyServiceTests
+    public class RealPropertyServiceTests
     {
-        private RealPropertyService _sut;
-        private Mock<ILogger<RealPropertyService>> _loggerMock;
-        private Mock<ILiteDbService> _liteDbServiceMock;
+        private readonly RealPropertyService _sut;
+        private readonly Mock<ILogger<RealPropertyService>> _loggerMock;
+        private readonly Mock<ILiteDbService> _liteDbServiceMock;
 
-        public PropertyServiceTests()
+        public RealPropertyServiceTests()
         {
             _loggerMock = new Mock<ILogger<RealPropertyService>>();
             _liteDbServiceMock = new Mock<ILiteDbService>();
-            _sut = new RealPropertyService(_liteDbServiceMock.Object, _loggerMock.Object);
+            _sut = new(_liteDbServiceMock.Object, _loggerMock.Object);
         }
 
         [Fact]
@@ -24,16 +25,17 @@ namespace CopilotDemoApiTests
         {
             // Arrange
             int id = 1;
-            RealProperty expectedProperty = new RealProperty { Id = id };
+            var expectedProperty = new RealProperty { Id = id };
 
             var liteCollectionMock = new Mock<ILiteCollection<RealProperty>>();
             liteCollectionMock.Setup(x => x.FindById(id)).Returns(expectedProperty);
             _liteDbServiceMock.Setup(x => x.GetRealProperties()).Returns(liteCollectionMock.Object);
 
             // Act
-            RealProperty actualProperty = _sut.GetPropertyById(id);
+            var actualProperty = _sut.GetPropertyById(id);
 
             // Assert
+            Assert.NotNull(actualProperty);
             Assert.Equal(expectedProperty.Id, actualProperty.Id);
         }
 
@@ -44,11 +46,13 @@ namespace CopilotDemoApiTests
             int id = 1;
 
             var liteCollectionMock = new Mock<ILiteCollection<RealProperty>>();
-            liteCollectionMock.Setup(x => x.FindById(id)).Returns(default(RealProperty));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            liteCollectionMock.Setup(x => x.FindById(id)).Returns((RealProperty?)null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             _liteDbServiceMock.Setup(x => x.GetRealProperties()).Returns(liteCollectionMock.Object);
 
             // Act
-            RealProperty actualProperty = _sut.GetPropertyById(id);
+            var actualProperty = _sut.GetPropertyById(id);
 
             // Assert
             Assert.Null(actualProperty);

@@ -1,4 +1,7 @@
-﻿using CopilotDemoApi.Services;
+﻿using CopilotDemoApi.InfrastructureAdapters;
+using CopilotDemoApi.InfrastructureAdapters.Interfaces;
+using CopilotDemoApi.Services;
+using CopilotDemoApi.Services.Interfaces;
 
 namespace CopilotDemoApi.Extensions
 {

@@ -1,7 +1,8 @@
+using CopilotDemoApi.InfrastructureAdapters.Interfaces;
 using CopilotDemoApi.Models;
 using LiteDB;
 
-namespace CopilotDemoApi.Services
+namespace CopilotDemoApi.InfrastructureAdapters
 {
     public class LiteDbService : ILiteDbService
     {
@@ -14,21 +15,115 @@ namespace CopilotDemoApi.Services
             _realProperties = _database.GetCollection<RealProperty>();
 
             var realProperties = new List<RealProperty>
+            {
+                new()
                 {
-                    new RealProperty { Id = 1, Area = 1000, Rooms = 3, PropertyType = RealPropertyType.House, Address = "123 Main St", Price = 200000 },
-                    new RealProperty { Id = 2, Area = 800, Rooms = 2, PropertyType = RealPropertyType.Apartment, Address = "456 Elm St", Price = 300000 },
-                    new RealProperty { Id = 3, Area = 1200, Rooms = 4, PropertyType = RealPropertyType.House, Address = "789 Oak St", Price = 250000 },
-                    new RealProperty { Id = 4, Area = 1500, Rooms = 5, PropertyType = RealPropertyType.House, Address = "321 Pine St", Price = 400000 },
-                    new RealProperty { Id = 5, Area = 900, Rooms = 2, PropertyType = RealPropertyType.Apartment, Address = "654 Maple St", Price = 350000 },
-                    new RealProperty { Id = 6, Area = 1100, Rooms = 3, PropertyType = RealPropertyType.House, Address = "987 Birch St", Price = 275000 },
-                    new RealProperty { Id = 7, Area = 950, Rooms = 2, PropertyType = RealPropertyType.Apartment, Address = "135 Cedar St", Price = 325000 },
-                    new RealProperty { Id = 8, Area = 1300, Rooms = 4, PropertyType = RealPropertyType.House, Address = "864 Walnut St", Price = 375000 },
-                    new RealProperty { Id = 9, Area = 750, Rooms = 1, PropertyType = RealPropertyType.Apartment, Address = "246 Spruce St", Price = 225000 },
-                    new RealProperty { Id = 10, Area = 1000, Rooms = 3, PropertyType = RealPropertyType.House, Address = "579 Ash St", Price = 275000 }
-                };
+                    Id = 1,
+                    Versions =
+                    [
+                        new()
+                        {
+                            VersionNumber = 1,
+                            Area = 1000,
+                            Rooms = 3,
+                            PropertyType = RealPropertyType.House,
+                            Price = 200000,
+                            Address = "123 Main St"
+                        },
+                        new()
+                        {
+                            VersionNumber = 2,
+                            Area = 1000,
+                            Rooms = 3,
+                            PropertyType = RealPropertyType.House,
+                            Price = 210000,
+                            Address = "123 Main St"
+                        },
+                    ]
+                },
+                new()
+                {
+                    Id = 2,
+                    Versions =
+                    [
+                        new()
+                        {
+                            VersionNumber = 1,
+                            Area = 800,
+                            Rooms = 2,
+                            PropertyType = RealPropertyType.Apartment,
+                            Price = 300000,
+                            Address = "456 Elm St"
+                        },
+                    ]
+                },
+                new()
+                {
+                    Id = 3,
+                    Versions =
+                    [
+                        new()
+                        {
+                            VersionNumber = 1,
+                            Area = 1200,
+                            Rooms = 4,
+                            PropertyType = RealPropertyType.House,
+                            Price = 250000,
+                            Address = "789 Oak St"
+                        },
+                    ]
+                },
+                new()
+                {
+                    Id = 4,
+                    Versions =
+                    [
+                        new()
+                        {
+                            VersionNumber = 1,
+                            Area = 1500,
+                            Rooms = 5,
+                            PropertyType = RealPropertyType.House,
+                            Price = 400000,
+                            Address = "321 Pine St"
+                        },
+                    ]
+                },
+                new()
+                {
+                    Id = 5,
+                    Versions =
+                    [
+                        new()
+                        {
+                            VersionNumber = 1,
+                            Area = 900,
+                            Rooms = 2,
+                            PropertyType = RealPropertyType.Apartment,
+                            Price = 350000,
+                            Address = "654 Maple St"
+                        },
+                    ]
+                },
+                new()
+                {
+                    Id = 6,
+                    Versions =
+                    [
+                        new()
+                        {
+                            VersionNumber = 1,
+                            Area = 1100,
+                            Rooms = 3,
+                            PropertyType = RealPropertyType.House,
+                            Price = 275000,
+                            Address = "987 Birch St"
+                        },
+                    ]
+                },
+            };
 
             _realProperties.InsertBulk(realProperties);
-
         }
 
         public ILiteCollection<RealProperty> GetRealProperties()

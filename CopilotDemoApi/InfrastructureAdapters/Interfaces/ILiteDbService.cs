@@ -1,7 +1,7 @@
 ﻿using CopilotDemoApi.Models;
 using LiteDB;
 
-namespace CopilotDemoApi.Services
+namespace CopilotDemoApi.InfrastructureAdapters.Interfaces
 {
     public interface ILiteDbService
     {

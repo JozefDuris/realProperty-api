@@ -1,4 +1,6 @@
+using CopilotDemoApi.InfrastructureAdapters.Interfaces;
 using CopilotDemoApi.Models;
+using CopilotDemoApi.Services.Interfaces;
 
 namespace CopilotDemoApi.Services
 {
@@ -24,6 +26,12 @@ namespace CopilotDemoApi.Services
                 _logger.LogError(ex, "Error retrieving property by ID.");
                 return null;
             }
+        }
+
+        public RealPropertyVersion? GetPropertyVersionById(int id, int versionNumber)
+        {
+            var property = GetPropertyById(id);
+            return property?.Versions.FirstOrDefault(v => v.VersionNumber == versionNumber);
         }
     }
 }
