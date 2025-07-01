@@ -33,5 +33,23 @@ namespace CopilotDemoApi.Services
             var property = GetPropertyById(id);
             return property?.Versions.FirstOrDefault(v => v.VersionNumber == versionNumber);
         }
+
+        public void AddProperty(RealProperty property)
+        {
+            _liteDbService.GetRealProperties().Insert(property);
+        }
+
+        public bool UpdateProperty(int id, RealProperty property)
+        {
+            var collection = _liteDbService.GetRealProperties();
+            property.Id = id;
+            return collection.Update(property);
+        }
+
+        public bool DeleteProperty(int id)
+        {
+            var collection = _liteDbService.GetRealProperties();
+            return collection.Delete(id);
+        }
     }
 }

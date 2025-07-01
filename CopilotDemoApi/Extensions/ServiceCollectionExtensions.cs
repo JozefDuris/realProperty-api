@@ -9,9 +9,11 @@ namespace CopilotDemoApi.Extensions
     {
         public static IServiceCollection RegisterAllTypes(this IServiceCollection services)
         {
-            services.AddTransient<IRealPropertyService, RealPropertyService>();
-            services.AddTransient<ILiteDbService, LiteDbService>();
-            services.AddTransient<IAdvertisementGenerationService, AdvertisementGenerationService>(); 
+            services
+                .AddScoped<IRealPropertyService, RealPropertyService>()
+                .AddScoped<ILiteDbService, LiteDbService>()
+                .AddScoped<IAdvertisementGenerationService, AdvertisementGenerationService>()
+                .AddScoped<IActivityLogService, ActivityLogService>();
 
             return services;
         }

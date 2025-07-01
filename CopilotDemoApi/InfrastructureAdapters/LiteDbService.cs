@@ -8,11 +8,15 @@ namespace CopilotDemoApi.InfrastructureAdapters
     {
         private readonly LiteDatabase _database;
         private readonly ILiteCollection<RealProperty> _realProperties;
+        private readonly ILiteCollection<User> _users;
+        private readonly ILiteCollection<ActivityLog> _activityLogs;
 
         public LiteDbService()
         {
             _database = new LiteDatabase(":memory:");
             _realProperties = _database.GetCollection<RealProperty>();
+            _users = _database.GetCollection<User>();
+            _activityLogs = _database.GetCollection<ActivityLog>();
 
             var realProperties = new List<RealProperty>
             {
@@ -124,11 +128,29 @@ namespace CopilotDemoApi.InfrastructureAdapters
             };
 
             _realProperties.InsertBulk(realProperties);
+
+            // Seed users
+            var users = new List<User>
+            {
+                new User { Id = 1, Username = "admin", Password = "pass", Role = "Admin" },
+                new User { Id = 2, Username = "user", Password = "pass", Role = "User" }
+            };
+            _users.InsertBulk(users);
         }
 
         public ILiteCollection<RealProperty> GetRealProperties()
         {
             return _realProperties;
+        }
+
+        public ILiteCollection<User> GetUsers()
+        {
+            return _users;
+        }
+
+        public ILiteCollection<ActivityLog> GetActivityLogs()
+        {
+            return _activityLogs;
         }
     }
 }
