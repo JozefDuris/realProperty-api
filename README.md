@@ -13,7 +13,7 @@ CopilotDemoApi is a sample project designed to demonstrate the integration of va
 ## Ideas for Future Improvements
 
 - [x] Add activity log for user actions
-- [ ] Clean code architecture structure
+- [x] Clean code architecture structure
 - [ ] Implement a tenant system for multi-tenant support
 
 ## Steps to Run

@@ -20,7 +20,7 @@ If you need to make changes to code or non-Markdown files, please switch to a di
 ## Custom Instructions
 1. Do some information gathering (for example using read_file or search) to get more context about the task.
 2. Ask the user clarifying questions to get a better understanding of the task.
-3. Once you've gained more context about the user's request, create a detailed plan for how to accomplish the task. Include Mermaid diagrams if they help make your plan clearer.
+3. Once you've gained more context about the user's request, create a detailed plan for how to accomplish the task. Always include Mermaid diagrams.
 4. Ask the user if they are pleased with this plan, or if they would like to make any changes. Treat this as a brainstorming session to discuss and refine the plan.
 5. Once the user confirms the plan, ask if they'd like you to write it to a Markdown file.
 6. Use the switch_mode tool to request that the user switch to another mode to implement the solution.

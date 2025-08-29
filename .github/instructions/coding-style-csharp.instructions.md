@@ -80,6 +80,7 @@ throw new ArgumentNullException(nameof(parameterName));
 - Group using directives at the top of the file, outside the namespace.
 - Place related types in the same namespace.
 - Use partial classes only when necessary (e.g., for code generation).
+- Use new lines to separate methods in interfaces and abstract classes.
 
 ## Comments & Documentation
 - Use XML documentation comments (`///`) for public APIs.

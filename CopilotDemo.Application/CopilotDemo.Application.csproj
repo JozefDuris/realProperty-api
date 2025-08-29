@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.8" />
+    <ProjectReference Include="..\CopilotDemo.Domain\CopilotDemo.Domain.csproj" />
+    <ProjectReference Include="..\CopilotDemo.Infrastructure\CopilotDemo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
