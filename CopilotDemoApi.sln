@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CopilotDemo.Application", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CopilotDemo.Infrastructure", "CopilotDemo.Infrastructure\CopilotDemo.Infrastructure.csproj", "{A4AB9FEC-579B-4B14-9E6B-E5D6D3A10367}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CopilotDemo.Api", "CopilotDemo.Api\CopilotDemo.Api.csproj", "{67A5E6E8-522D-49FE-9AB7-0A5F63393CC8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CopilotDemo.WebApi", "CopilotDemo.WebApi\CopilotDemo.WebApi.csproj", "{67A5E6E8-522D-49FE-9AB7-0A5F63393CC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
