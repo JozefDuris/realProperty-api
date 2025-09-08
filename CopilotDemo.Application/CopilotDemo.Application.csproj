@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CopilotDemo.Domain\CopilotDemo.Domain.csproj" />
-    <ProjectReference Include="..\CopilotDemo.Infrastructure\CopilotDemo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

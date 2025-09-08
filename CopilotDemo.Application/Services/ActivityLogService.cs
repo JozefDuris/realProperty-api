@@ -1,6 +1,5 @@
 using CopilotDemo.Application.Interfaces;
 using CopilotDemo.Domain.Models;
-using CopilotDemo.Infrastructure.Interfaces;
 
 namespace CopilotDemo.Application.Services
 {
@@ -22,12 +21,12 @@ namespace CopilotDemo.Application.Services
                 Timestamp = DateTime.UtcNow,
                 Details = details
             };
-            _liteDbService.GetActivityLogs().Insert(log);
+            _liteDbService.CreateActivityLog(log);
         }
 
         public IEnumerable<ActivityLog> GetLogs()
         {
-            return _liteDbService.GetActivityLogs().FindAll();
+            return _liteDbService.GetActivityLogs();
         }
     }
 }

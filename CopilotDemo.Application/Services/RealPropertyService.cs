@@ -1,7 +1,6 @@
-using Microsoft.Extensions.Logging;
-using CopilotDemo.Domain.Models;
-using CopilotDemo.Infrastructure.Interfaces;
 using CopilotDemo.Application.Interfaces;
+using CopilotDemo.Domain.Models;
+using Microsoft.Extensions.Logging;
 
 namespace CopilotDemo.Application.Services
 {
@@ -17,17 +16,7 @@ namespace CopilotDemo.Application.Services
         }
 
         public RealProperty? GetPropertyById(int id)
-        {
-            try
-            {
-                return _liteDbService.GetRealProperties().FindById(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving property by ID.");
-                return null;
-            }
-        }
+            => _liteDbService.GetRealPropertyById(id);
 
         public RealPropertyVersion? GetPropertyVersionById(int id, int versionNumber)
         {
@@ -36,21 +25,22 @@ namespace CopilotDemo.Application.Services
         }
 
         public void AddProperty(RealProperty property)
-        {
-            _liteDbService.GetRealProperties().Insert(property);
-        }
+            => _liteDbService.CreateRealProperty(property);
 
         public bool UpdateProperty(int id, RealProperty property)
         {
-            var collection = _liteDbService.GetRealProperties();
             property.Id = id;
-            return collection.Update(property);
+            _liteDbService.UpdateRealProperty(property);
+            return true;
         }
 
         public bool DeleteProperty(int id)
         {
-            var collection = _liteDbService.GetRealProperties();
-            return collection.Delete(id);
+            _liteDbService.DeleteRealProperty(id);
+            return true;
         }
+
+        public IEnumerable<RealProperty> GetAllProperties()
+            => _liteDbService.GetRealProperties();
     }
 }

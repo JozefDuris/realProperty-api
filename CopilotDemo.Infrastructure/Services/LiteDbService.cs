@@ -1,5 +1,5 @@
+using CopilotDemo.Application.Interfaces;
 using CopilotDemo.Domain.Models;
-using CopilotDemo.Infrastructure.Interfaces;
 using LiteDB;
 
 namespace CopilotDemo.Infrastructure.Services
@@ -138,19 +138,49 @@ namespace CopilotDemo.Infrastructure.Services
             _users.InsertBulk(users);
         }
 
-        public ILiteCollection<RealProperty> GetRealProperties()
+        public IEnumerable<RealProperty> GetRealProperties()
         {
-            return _realProperties;
+            return _realProperties.FindAll();
         }
 
-        public ILiteCollection<User> GetUsers()
+        public int CreateRealProperty(RealProperty realProperty)
         {
-            return _users;
+            return _realProperties.Insert(realProperty);
         }
 
-        public ILiteCollection<ActivityLog> GetActivityLogs()
+        public RealProperty? GetRealPropertyById(int id)
         {
-            return _activityLogs;
+            return _realProperties.FindById(id);
+        }
+
+        public void UpdateRealProperty(RealProperty realProperty)
+        {
+            _realProperties.Update(realProperty);
+        }
+
+        public void DeleteRealProperty(int id)
+        {
+            _realProperties.Delete(id);
+        }
+
+        public IEnumerable<User> GetUsers()
+        {
+            return _users.FindAll();
+        }
+
+        public User? GetUser(string username, string password)
+        {
+            return _users.FindOne(x => x.Username == username && x.Password == password);
+        }
+
+        public IEnumerable<ActivityLog> GetActivityLogs()
+        {
+            return _activityLogs.FindAll();
+        }
+
+        public int CreateActivityLog(ActivityLog activityLog)
+        {
+            return _activityLogs.Insert(activityLog);
         }
     }
 }

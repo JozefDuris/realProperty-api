@@ -1,4 +1,4 @@
-using CopilotDemo.Infrastructure.Interfaces;
+using CopilotDemo.Application.Interfaces;
 using CopilotDemo.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 

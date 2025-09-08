@@ -61,6 +61,14 @@ namespace CopilotDemo.Api.Controllers
             return new NotFoundResult();
         }
 
+        [HttpGet]
+        public ActionResult<IEnumerable<RealProperty>> GetAllRealProperties()
+        {
+            var properties = _realPropertyService.GetAllProperties();
+            _activityLogService.Log(User.Identity?.Name ?? "anonymous", "Viewed all properties");
+            return new OkObjectResult(properties);
+        }
+
         // --- CRUD for Admins ---
         [HttpPost]
         [Authorize(Roles = "Admin")]

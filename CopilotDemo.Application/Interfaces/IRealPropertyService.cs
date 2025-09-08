@@ -4,6 +4,7 @@ namespace CopilotDemo.Application.Interfaces
 {
     public interface IRealPropertyService
     {
+        IEnumerable<RealProperty> GetAllProperties();
         RealProperty? GetPropertyById(int id);
         RealPropertyVersion? GetPropertyVersionById(int id, int versionNumber);
         void AddProperty(RealProperty property);

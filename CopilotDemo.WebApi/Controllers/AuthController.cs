@@ -1,5 +1,5 @@
+using CopilotDemo.Application.Interfaces;
 using CopilotDemo.Domain.Models;
-using CopilotDemo.Infrastructure.Interfaces;
 using CopilotDemo.Infrastructure.Tools;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,13 +23,12 @@ namespace CopilotDemo.Api.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginModel userLogin)
         {
-            var users = _liteDbService.GetUsers();
-            var user = users.FindOne(u => u.Username == userLogin.Username && u.Password == userLogin.Password);
+            var user = _liteDbService.GetUser(userLogin.Username, userLogin.Password);
             if (user != null)
             {
                 var jwtKey = _configuration["Jwt:Key"]!;
                 var tokenString = JwtTool.GenerateAccessToken(user.Username, user.Role, jwtKey);
-                return Ok(new { Token = tokenString, Role = user.Role });
+                return Ok(new { Token = tokenString, user.Role });
             }
             return Unauthorized();
         }
