@@ -4,7 +4,7 @@ using CopilotDemo.Infrastructure.Tools;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CopilotDemo.Api.Controllers
+namespace CopilotDemo.WebApi.Controllers
 {
     [ApiController]
     [Route("auth")]

@@ -4,6 +4,8 @@ namespace CopilotDemo.Application.Interfaces
 {
     public interface IAdvertisementGenerationService
     {
-        string GenerateAdvertisement(RealProperty data);
+        string GenerateAdvertisement(RealProperty property);
+
+        string GenerateAdvertisement(RealProperty property, int? versionNumber);
     }
 }

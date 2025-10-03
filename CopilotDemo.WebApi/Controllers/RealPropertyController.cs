@@ -3,11 +3,11 @@ using CopilotDemo.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CopilotDemo.Api.Controllers
+namespace CopilotDemo.WebApi.Controllers
 {
     [ApiController]
     [Route("real-properties")]
-    [Authorize]
+    //[Authorize]
     public class RealPropertyController : ControllerBase
     {
         private readonly IRealPropertyService _realPropertyService;
@@ -37,16 +37,25 @@ namespace CopilotDemo.Api.Controllers
         }
 
         [HttpGet("{id}/advertisement")]
-        public ActionResult<string> GetAdvertisementForProperty(int id)
+        public ActionResult<string> GetAdvertisementForProperty(int id, [FromQuery] int? version = null)
         {
             var property = _realPropertyService.GetPropertyById(id);
-            if (property != null)
+            if (property == null)
             {
-                var advertisement = _advertisementGenerationService.GenerateAdvertisement(property);
-                _activityLogService.Log(User.Identity?.Name ?? "anonymous", $"Viewed advertisement for property {id}");
+                return new NotFoundResult();
+            }
+
+            try
+            {
+                var advertisement = _advertisementGenerationService.GenerateAdvertisement(property, version);
+                var versionLabel = version.HasValue ? $"version {version.Value}" : "latest version";
+                _activityLogService.Log(User.Identity?.Name ?? "anonymous", $"Viewed advertisement for property {id} ({versionLabel})");
                 return new OkObjectResult(advertisement);
             }
-            return new NotFoundResult();
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpGet("{id}/versions/{versionNumber}")]

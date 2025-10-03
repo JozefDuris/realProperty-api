@@ -399,3 +399,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /CopilotDemoApi/appsettings.Development.json
+/CopilotDemo.WebApi/appsettings.Development.json

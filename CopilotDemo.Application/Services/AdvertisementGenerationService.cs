@@ -8,19 +8,35 @@ namespace CopilotDemo.Application.Services
     {
         public string GenerateAdvertisement(RealProperty data)
         {
-            var result = new StringBuilder();
-
             var latestVersion = data.GetLatestVersion()!;
+            return BuildAdvertisement(latestVersion);
+        }
 
-            result.AppendLine(GenerateHeader());
-            result.AppendLine(GetPropertySummary(latestVersion));
-            result.AppendLine(GetPropertyLocationSummary(latestVersion));
-            if (latestVersion.PropertyType == RealPropertyType.Apartment)
+        public string GenerateAdvertisement(RealProperty property, int? versionNumber)
+        {
+            if (!versionNumber.HasValue)
             {
-                result.AppendLine(GetParkingOptions(latestVersion));
+                return GenerateAdvertisement(property);
+            }
+
+            var match = property.Versions.FirstOrDefault(v => v.VersionNumber == versionNumber.Value);
+
+            return match != null
+                ? BuildAdvertisement(match)
+                : throw new KeyNotFoundException($"Version {versionNumber.Value} not found for property {property.Id}.");
+        }
+
+        private static string BuildAdvertisement(RealPropertyVersion version)
+        {
+            var result = new StringBuilder();
+            result.AppendLine(GenerateHeader());
+            result.AppendLine(GetPropertySummary(version));
+            result.AppendLine(GetPropertyLocationSummary(version));
+            if (version.PropertyType == RealPropertyType.Apartment)
+            {
+                result.AppendLine(GetParkingOptions(version));
             }
             result.AppendLine(GenerateContactInfo());
-
             return result.ToString();
         }
 
@@ -41,7 +57,13 @@ namespace CopilotDemo.Application.Services
 
         private static string GetPropertySummary(RealPropertyVersion version)
         {
-            return $"Awesome {Enum.GetName(version.PropertyType)} with {version.Rooms} rooms covering {version.Area} m2";
+            // Price formatting per requirements: use en-US culture; if price not provided or <= 0, show fallback text
+            var culture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+            string pricePart = version.Price > 0
+                ? $" for {version.Price.ToString("C", culture)}"
+                : " (Price on request)";
+
+            return $"Awesome {Enum.GetName(version.PropertyType)} with {version.Rooms} rooms covering {version.Area} m2{pricePart}";
         }
 
         private static string GetPropertyLocationSummary(RealPropertyVersion version)
