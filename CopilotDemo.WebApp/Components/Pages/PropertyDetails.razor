@@ -1,0 +1,271 @@
+@page "/properties/{id:int}"
+@rendermode InteractiveServer
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Property Details</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Property Details</h1>
+    <button class="btn btn-outline-secondary" @onclick="NavigateToProperties">
+        <span class="bi bi-arrow-left"></span>
+        Back to Properties
+    </button>
+</div>
+
+@if (isLoading)
+{
+    <div class="d-flex justify-content-center p-4">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else if (errorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @errorMessage
+        <button class="btn btn-sm btn-outline-secondary ms-2" @onclick="LoadPropertyDetails">
+            Try Again
+        </button>
+    </div>
+}
+else if (property != null)
+{
+    <!-- Version Selection + Details (Single Version View) -->
+    <div class="card mb-4">
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h5 class="mb-0 d-flex align-items-center gap-2">
+                <span class="bi bi-house-door"></span>
+                <span>Property Version Details</span>
+            </h5>
+            @if (property?.Versions?.Any() == true)
+            {
+                <div class="d-flex align-items-center gap-2">
+                    <label class="form-label mb-0" for="versionSelect">Version:</label>
+                    <select id="versionSelect" class="form-select form-select-sm" style="min-width:160px" @onchange="OnVersionChanged" value="@selectedVersionNumber">
+                        @foreach (var v in property!.Versions.OrderByDescending(v => v.VersionNumber))
+                        {
+                            var isCurrent = v.VersionNumber == property.GetLatestVersion()?.VersionNumber;
+                            <option value="@v.VersionNumber">@v.VersionNumber@(isCurrent ? " (current)" : null)</option>
+                        }
+                    </select>
+                </div>
+            }
+        </div>
+        <div class="card-body">
+            @if (!string.IsNullOrWhiteSpace(versionSelectionError))
+            {
+                <div class="alert alert-warning mb-3">@versionSelectionError</div>
+            }
+            @if (selectedVersion is not null)
+            {
+                var latestVersion = property?.GetLatestVersion();
+                var isCurrent = latestVersion != null && selectedVersion.VersionNumber == latestVersion.VersionNumber;
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Address @if (isCurrent) { <span class="badge bg-success ms-1">Current</span> }</h6>
+                        <p class="fs-5">@selectedVersion.Address</p>
+                        <h6 class="text-muted">Property Type</h6>
+                        <span class="badge bg-primary fs-6">@selectedVersion.PropertyType</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-muted">Area</h6>
+                                <p class="fs-5">@selectedVersion.Area m²</p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-muted">Rooms</h6>
+                                <p class="fs-5">@selectedVersion.Rooms</p>
+                            </div>
+                        </div>
+                        <h6 class="text-muted">Price</h6>
+                        <p class="fs-4 text-success fw-bold">@selectedVersion.Price.ToString("C")</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">No version selected.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Advertisement Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <span class="bi bi-megaphone"></span>
+                Advertisement (based on selected version)
+                <button class="btn btn-sm btn-outline-primary ms-2" @onclick="LoadAdvertisement" disabled="@isLoadingAd">
+                    @if (isLoadingAd)
+                    {
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span>Generating...</span>
+                    }
+                    else
+                    {
+                        <span class="bi bi-arrow-clockwise"></span>
+                        <span>Generate Advertisement</span>
+                    }
+                </button>
+            </h5>
+        </div>
+        <div class="card-body">
+            @if (advertisement != null)
+            {
+                <div class="alert alert-info">
+                    @advertisement
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">Click "Generate Advertisement" to create a marketing description for this property.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Removed Version History table per requirements -->
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    
+    private RealProperty? property;
+    private string? advertisement;
+    private bool isLoading = true;
+    private bool isLoadingAd = false;
+    private string? errorMessage;
+    private int? selectedVersionNumber;
+    private RealPropertyVersion? selectedVersion;
+    private string? versionSelectionError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPropertyDetails();
+    }
+
+    @* protected override async Task OnParametersSetAsync()
+    {
+        if (property?.Id != Id)
+        {
+            await LoadPropertyDetails();
+        }
+    } *@
+
+    private async Task LoadPropertyDetails()
+    {
+        try
+        {
+            isLoading = true;
+            errorMessage = null;
+            advertisement = null;
+            versionSelectionError = null;
+            selectedVersion = null;
+            selectedVersionNumber = null;
+
+            var httpClient = HttpClientFactory.CreateClient("WebApi");
+            var response = await httpClient.GetAsync($"real-properties/{Id}");
+            
+            if (response.IsSuccessStatusCode)
+            {
+                property = await response.Content.ReadFromJsonAsync<RealProperty>();
+                var latest = property?.GetLatestVersion();
+                if (latest != null)
+                {
+                    selectedVersionNumber = latest.VersionNumber;
+                    selectedVersion = latest;
+                }
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                errorMessage = "Property not found.";
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                errorMessage = "Authentication required. Please ensure the API is configured for anonymous access or implement authentication.";
+            }
+            else
+            {
+                errorMessage = $"Failed to load property details. Status: {response.StatusCode}";
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            errorMessage = $"Connection error: {ex.Message}. Please ensure the API is running.";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error loading property details: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task LoadAdvertisement()
+    {
+        try
+        {
+            isLoadingAd = true;
+            
+            var httpClient = HttpClientFactory.CreateClient("WebApi");
+            // Pass selected version number if available (assuming backend supports version query parameter)
+            var versionQuery = selectedVersionNumber.HasValue ? $"?version={selectedVersionNumber.Value}" : string.Empty;
+            var response = await httpClient.GetAsync($"real-properties/{Id}/advertisement{versionQuery}");
+            
+            if (response.IsSuccessStatusCode)
+            {
+                advertisement = await response.Content.ReadAsStringAsync();
+                // Remove quotes if the response is a JSON string
+                if (advertisement.StartsWith("\"") && advertisement.EndsWith("\""))
+                {
+                    advertisement = advertisement.Trim('"').Replace("\\n", "\n").Replace("\\\"", "\"");
+                }
+            }
+            else
+            {
+                advertisement = "Failed to generate advertisement. Please try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            advertisement = $"Error generating advertisement: {ex.Message}";
+        }
+        finally
+        {
+            isLoadingAd = false;
+        }
+    }
+
+    private void NavigateToProperties()
+    {
+        NavigationManager.NavigateTo("/properties");
+    }
+
+    private Task OnVersionChanged(ChangeEventArgs e)
+    {
+        versionSelectionError = null;
+        advertisement = null; // clear previous advertisement when switching versions
+        if (int.TryParse(e?.Value?.ToString(), out var verNumber) && property != null)
+        {
+            var match = property.Versions.FirstOrDefault(v => v.VersionNumber == verNumber);
+            if (match != null)
+            {
+                selectedVersionNumber = verNumber;
+                selectedVersion = match;
+            }
+            else
+            {
+                versionSelectionError = $"Selected version {verNumber} not found.";
+            }
+        }
+        else
+        {
+            versionSelectionError = "Invalid version selection.";
+        }
+        return Task.CompletedTask;
+    }
+}

@@ -9,7 +9,7 @@ builder.Services.AddRazorComponents()
 // Add HttpClient for API calls
 builder.Services.AddHttpClient("WebApi", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7200/"); // Update with actual API URL
+    client.BaseAddress = new Uri("https://localhost:63811/"); // Update with actual API URL
 });
 
 var app = builder.Build();
